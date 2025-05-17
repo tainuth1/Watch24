@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
+import Pagination from "../components/Pagination";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
@@ -8,17 +9,20 @@ const Home = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errMsg, setMsg] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   const fetchMovies = async () => {
     try {
       setLoading(true);
       setMsg("");
-      const response = await fetch(`${apiUrl}/movie/popular?api_key=${apiKey}`);
+      const response = await fetch(`${apiUrl}/movie/popular?api_key=${apiKey}&page=${currentPage}`);
       if (!response.ok) {
         throw new Error("Failed to fetch movies");
       }
       const data = await response.json();
       setMovies(data.results);
+      setTotalPages(data.total_pages);
     } catch (error) {
       setMsg("Connection Failed");
     } finally {
@@ -27,7 +31,7 @@ const Home = () => {
   };
   useEffect(() => {
     fetchMovies();
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className="w-full py-10">
@@ -61,6 +65,12 @@ const Home = () => {
             <MovieCard key={movie.id} movie={movie} />
           ))}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          setTotalPages={setTotalPages}
+        />
       </div>
     </div>
   );

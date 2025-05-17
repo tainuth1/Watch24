@@ -19,7 +19,8 @@ const MovieDetail = () => {
         throw new Error("Failed to fetch movie key");
       }
       const data = await response.json();
-      setMovieKey(data.results[0].key);
+      console.log(data);
+      setMovieKey(data.results[1].key);
     } catch (error) {
       console.log(error.message);
     }
