@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
+import { useSearchParams } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
@@ -9,14 +10,18 @@ const Home = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errMsg, setMsg] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [page] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(parseInt(page.get("page")) || 1);
   const [totalPages, setTotalPages] = useState(0);
 
   const fetchMovies = async () => {
     try {
+      setMovies([])
       setLoading(true);
       setMsg("");
-      const response = await fetch(`${apiUrl}/movie/popular?api_key=${apiKey}&page=${currentPage}`);
+      const response = await fetch(
+        `${apiUrl}/movie/popular?api_key=${apiKey}&page=${currentPage}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch movies");
       }
