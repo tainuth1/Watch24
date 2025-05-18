@@ -35,7 +35,7 @@ const getPageNumbers = (currentPage, totalPages) => {
 const Pagination = ({
   currentPage,
   totalPages,
-  setCurrentPage,
+  setCurrentPage, 
   setTotalPages,
 }) => {
   const navigate = useNavigate();
