@@ -10,18 +10,23 @@ const Home = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errMsg, setMsg] = useState("");
-  const [page] = useSearchParams();
-  const [currentPage, setCurrentPage] = useState(parseInt(page.get("page")) || 1);
+  const [params, setParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(params.get("page")) || 1
+  );
   const [totalPages, setTotalPages] = useState(0);
+  const search = params.get("search") || "";
 
   const fetchMovies = async () => {
     try {
-      setMovies([])
+      setMovies([]);
       setLoading(true);
       setMsg("");
-      const response = await fetch(
-        `${apiUrl}/movie/popular?api_key=${apiKey}&page=${currentPage}`
-      );
+      const endpoint =
+        search != ""
+          ? `${apiUrl}/search/movie?api_key=${apiKey}&query=${search}&page=${currentPage}`
+          : `${apiUrl}/movie/popular?api_key=${apiKey}&page=${currentPage}`;
+      const response = await fetch(endpoint);
       if (!response.ok) {
         throw new Error("Failed to fetch movies");
       }
@@ -36,7 +41,7 @@ const Home = () => {
   };
   useEffect(() => {
     fetchMovies();
-  }, [currentPage]);
+  }, [currentPage, search]);
 
   return (
     <div className="w-full py-10">

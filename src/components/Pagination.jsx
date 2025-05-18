@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const getPageNumbers = (currentPage, totalPages) => {
   const pages = [];
@@ -40,11 +40,17 @@ const Pagination = ({
 }) => {
   const navigate = useNavigate();
   const pageNumbers = getPageNumbers(currentPage, totalPages);
+  const [params, setParams] = useSearchParams();
+  const search = params.get("search") || "";
 
   const goToPage = (page) => {
     if (page < 1 || page > totalPages || page === currentPage) return;
     setCurrentPage(page);
-    navigate(`?page=${page}`);
+    if(search == ""){
+      navigate(`?page=${page}`);
+    }else{
+      navigate(`?page=${page}&search=${search}`)
+    }
   };
 
   return (
